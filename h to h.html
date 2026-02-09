@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine? 💖</title>
+
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#1b1030;
+      --pink:#ff4fa3;
+      --rose:#ff7bbd;
+      --text:#f6f7ff;
+      --muted:#cfd3ffcc;
+      --card:#ffffff12;
+      --shadow: 0 30px 80px rgba(0,0,0,.55);
+      --radius: 26px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      overflow:hidden;
+      background:
+        radial-gradient(1200px 700px at 15% 20%, #ff4fa320, transparent 55%),
+        radial-gradient(900px 600px at 85% 35%, #ffd36e22, transparent 60%),
+        radial-gradient(1200px 900px at 50% 100%, #7b5cff25, transparent 60%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+    }
+
+    /* 🌌 Moving glow */
+    .glow{
+      position:fixed;
+      inset:-25%;
+      background:
+        radial-gradient(circle at 20% 30%, #ff4fa334, transparent 42%),
+        radial-gradient(circle at 80% 40%, #ffd36e28, transparent 48%),
+        radial-gradient(circle at 50% 82%, #7b5cff30, transparent 52%);
+      animation: moveGlow 16s ease-in-out infinite alternate;
+      z-index:0;
+      pointer-events:none;
+    }
+    @keyframes moveGlow{
+      from{ transform: translate(0,0) scale(1); }
+      to{ transform: translate(-45px, -65px) scale(1.12); }
+    }
+
+    /* 💗 Floating hearts (background) */
+    .hearts{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      z-index:1;
+      pointer-events:none;
+    }
+    .float-heart{
+      position:absolute;
+      bottom:-60px;
+      font-size:18px;
+      opacity:.7;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.25));
+      animation: floatUp linear infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes floatUp{
+      0%   { transform: translateY(0) translateX(0) scale(.9); opacity:0; }
+      10%  { opacity:.85; }
+      70%  { opacity:.85; }
+      100% { transform: translateY(-120vh) translateX(30px) scale(1.35); opacity:0; }
+    }
+
+    /* Header + Footer */
+    header, footer{
+      z-index:2;
+      text-align:center;
+      color:var(--muted);
+      width:min(760px, 100%);
+    }
+    header{
+      margin-bottom:14px;
+      font-size:14px;
+      letter-spacing:.3px;
+      line-height:1.5;
+    }
+    header strong{
+      color:#fff;
+      font-weight:800;
+    }
+    footer{
+      margin-top:14px;
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+
+    /* Main card */
+    .card{
+      position:relative;
+      z-index:2;
+      max-width:760px;
+      width:100%;
+      background: var(--card);
+      border:1px solid #ffffff22;
+      border-radius: var(--radius);
+      padding:32px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    h1{
+      margin:0 0 14px;
+      font-size: clamp(26px, 4.5vw, 40px);
+      letter-spacing:-0.5px;
+    }
+
+    .letter{
+      font-size:16px;
+      line-height:1.75;
+      white-space:pre-wrap;
+      margin:0 0 26px;
+      color:#f4f6ff;
+    }
+
+    .buttons{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      font-weight:800;
+      border-radius:14px;
+      padding:14px 18px;
+      font-size:16px;
+      transition: transform .15s ease, filter .15s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .yes{
+      background: linear-gradient(135deg, var(--pink), var(--rose));
+      color:white;
+      box-shadow: 0 12px 30px #ff4fa33a;
+    }
+    .yes:hover{ transform: translateY(-1px) scale(1.02); filter: brightness(1.08); }
+    .yes:active{ transform: scale(.99); }
+
+    .no{
+      background:#ffffff14;
+      color:#ffffffdd;
+      border:1px solid #ffffff26;
+      box-shadow: 0 10px 25px rgba(0,0,0,.22);
+    }
+
+    /* ✅ Modal */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.62);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:10;
+    }
+    .overlay.show{ display:flex; }
+
+    .modal{
+      max-width:640px;
+      width:100%;
+      background:#ffffff14;
+      border:1px solid #ffffff26;
+      border-radius:22px;
+      padding:26px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+    }
+
+    .modal h2{
+      margin:0 0 10px;
+      font-size: clamp(22px, 4vw, 30px);
+      letter-spacing:-.3px;
+      color:#fff;
+    }
+
+    .modal p{
+      margin:0;
+      line-height:1.75;
+      font-size:16px;
+      color:#f4f6ff;
+      white-space:pre-wrap;
+    }
+
+    .close{
+      margin-top:18px;
+      background:#ffffff14;
+      color:#fff;
+      border:1px solid #ffffff22;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:800;
+    }
+
+    /* 💥 Heart confetti burst pieces (the "pop") */
+    .confetti{
+      position:fixed;
+      left:0; top:0;
+      pointer-events:none;
+      z-index:20;
+      will-change: transform, opacity;
+      animation: confettiFly 1.6s ease-out forwards;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.25));
+    }
+    @keyframes confettiFly{
+      0%   { transform: translate(0,0) scale(.7); opacity:0; }
+      10%  { opacity:1; }
+      70%  { opacity:1; }
+      100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1.35); opacity:0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glow"></div>
+  <div class="hearts" id="hearts" aria-hidden="true"></div>
+
+  <!-- 💌 Header -->
+  <header>
+    A small page with a big question 💌<br>
+    <strong>From someone who loves you — deeply, genuinely, and always.</strong>
+  </header>
+
+  <!-- 💖 Main -->
+  <div class="card">
+    <h1>Will you be my Valentine? 💖</h1>
+
+    <div class="letter">
+Even with distance between us, you still feel close — like home in my chest.
+
+I don’t need a perfect day, or perfect timing.
+I just need you — your laugh, your thoughts, the way you exist in my life.
+
+So here’s my question, wrapped in all my softness:
+Will you be my Valentine?
+
+If you say yes, I’ll make it a little tradition:
+we’ll create our own date — calls, food, music, a movie,
+and the kind of “I miss you” that turns into “I’m with you.”
+
+No pressure… (okay, tiny pressure 😅)
+But a whole lot of love.
+    </div>
+
+    <div class="buttons">
+      <button class="yes" id="yesBtn">Yes 💖</button>
+      <button class="no" id="noBtn">No 🙈</button>
+    </div>
+  </div>
+
+  <!-- 💗 Footer -->
+  <footer>
+    Made with love, patience, and a lot of missing you 💞
+  </footer>
+
+  <!-- YES MODAL -->
+  <div class="overlay" id="overlay" aria-modal="true" role="dialog">
+    <div class="modal">
+      <h2>You just made my whole heart smile 🥹💖</h2>
+      <p>
+Okay… I’m genuinely so happy right now.
+
+Thank you for choosing me — across every mile, every busy day, every time zone, and every moment we’ve had to miss each other.
+
+I promise this:
+I’ll love you in the small ways (the daily check-ins, the soft reassurance, the “I’m here”)
+and in the big ways (the patience, the effort, the future we’re building).
+
+Now come here… tell me what you want for our Valentine date:
+📞 a long call
+🍽️ dinner at the same time
+🎬 a movie night
+or… “surprise me” 😌
+      </p>
+      <button class="close" id="closeBtn">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const heartsLayer = document.getElementById("hearts");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+    const overlay = document.getElementById("overlay");
+    const closeBtn = document.getElementById("closeBtn");
+
+    /***********************
+     * 💗 Floating hearts background
+     ***********************/
+    const bgHearts = ["💗","💕","💖","💘","💝","💞","💓","✨"];
+    function spawnFloatingHeart(){
+      const h = document.createElement("div");
+      h.className = "float-heart";
+      h.textContent = bgHearts[Math.floor(Math.random()*bgHearts.length)];
+
+      const left = Math.random()*100; // vw
+      const size = 14 + Math.random()*24; // px
+      const duration = 10 + Math.random()*12; // sec
+      const delay = Math.random()*2;
+
+      h.style.left = left + "vw";
+      h.style.fontSize = size + "px";
+      h.style.animationDuration = duration + "s";
+      h.style.animationDelay = delay + "s";
+      h.style.opacity = (0.45 + Math.random()*0.45).toFixed(2);
+
+      heartsLayer.appendChild(h);
+      setTimeout(() => h.remove(), (duration + delay) * 1000 + 200);
+    }
+
+    for(let i=0;i<16;i++) spawnFloatingHeart();
+    setInterval(spawnFloatingHeart, 850);
+
+    /***********************
+     * 💥 Heart confetti burst (the "pop")
+     ***********************/
+    const burstEmojis = ["💖","💘","💝","💗","💕","💞","💓","✨","🥰"];
+
+    function burstConfetti(x, y, amount = 30){
+      for(let i=0;i<amount;i++){
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.textContent = burstEmojis[Math.floor(Math.random()*burstEmojis.length)];
+
+        const dx = (Math.random()*300 - 150) + "px";
+        const dy = (Math.random()*-300 - 120) + "px";
+        const rot = (Math.random()*720 - 360) + "deg";
+        const size = (14 + Math.random()*20) + "px";
+
+        c.style.left = x + "px";
+        c.style.top  = y + "px";
+        c.style.setProperty("--dx", dx);
+        c.style.setProperty("--dy", dy);
+        c.style.setProperty("--rot", rot);
+        c.style.fontSize = size;
+        c.style.animationDuration = (1.2 + Math.random()*0.7) + "s";
+
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 1900);
+      }
+    }
+
+    // Yes: burst + modal (tap-friendly on mobile)
+    yesBtn.addEventListener("click", () => {
+      const r = yesBtn.getBoundingClientRect();
+      const x = r.left + r.width/2;
+      const y = r.top + r.height/2;
+      burstConfetti(x, y, 34);
+      overlay.classList.add("show");
+    });
+
+    // Close modal
+    closeBtn.addEventListener("click", () => overlay.classList.remove("show"));
+    overlay.addEventListener("click", (e) => {
+      if(e.target === overlay) overlay.classList.remove("show");
+    });
+
+    /***********************
+     * 🙈 Playful "No" dodge
+     ***********************/
+    function moveNo(){
+      const pad = 18;
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - pad*2) + pad;
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - pad*2) + pad;
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+    }
+
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("click", () => {
+      const r = noBtn.getBoundingClientRect();
+      burstConfetti(r.left + r.width/2, r.top + r.height/2, 12);
+      moveNo();
+    });
+  </script>
+</body>
+</html>
