@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For Hadia 💖</title>
+
+<style>
+  :root{
+    --bg1:#0b1020;
+    --bg2:#1b1030;
+    --pink:#ff4fa3;
+    --rose:#ff7bbd;
+    --gold:#ffd36e;
+    --text:#f6f7ff;
+    --muted:#cfd3ffcc;
+    --card:#ffffff12;
+    --radius:26px;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:var(--text);
+    overflow:hidden;
+    background:
+      radial-gradient(1200px 700px at 15% 20%, #ff4fa320, transparent 55%),
+      radial-gradient(900px 600px at 85% 35%, #ffd36e22, transparent 60%),
+      radial-gradient(1200px 900px at 50% 100%, #7b5cff25, transparent 60%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+  }
+
+  /* Moving glow (always behind everything) */
+  .glow{
+    position:fixed;
+    inset:-30%;
+    background:
+      radial-gradient(circle at 20% 30%, #ff4fa334, transparent 42%),
+      radial-gradient(circle at 80% 40%, #ffd36e28, transparent 48%),
+      radial-gradient(circle at 50% 82%, #7b5cff30, transparent 52%);
+    animation:moveGlow 16s ease-in-out infinite alternate;
+    pointer-events:none;
+    z-index:0;
+  }
+  @keyframes moveGlow{
+    from{transform:translate(0,0) scale(1);}
+    to{transform:translate(-50px,-60px) scale(1.12);}
+  }
+
+  /* Floating hearts (background) */
+  .hearts{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+  }
+  .float-heart{
+    position:absolute;
+    bottom:-50px;
+    opacity:.75;
+    filter: drop-shadow(0 10px 16px rgba(0,0,0,.25));
+    animation: floatUp linear infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes floatUp{
+    0%{transform:translateY(0) translateX(0) scale(.9); opacity:0;}
+    10%{opacity:.85;}
+    70%{opacity:.85;}
+    100%{transform:translateY(-120vh) translateX(30px) scale(1.35); opacity:0;}
+  }
+
+  header, footer{
+    z-index:2;
+    text-align:center;
+    color:var(--muted);
+    width:min(820px,100%);
+  }
+  header{margin-bottom:14px; font-size:14px; line-height:1.5;}
+  header strong{color:#fff; font-weight:900;}
+  footer{margin-top:14px; font-size:13px; letter-spacing:.2px;}
+
+  .card{
+    position:relative;
+    z-index:2;
+    width:min(820px,100%);
+    background:var(--card);
+    border:1px solid #ffffff22;
+    border-radius:var(--radius);
+    padding:32px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  h1{
+    margin:0 0 14px;
+    font-size:clamp(26px,4.6vw,42px);
+    letter-spacing:-.5px;
+  }
+
+  .letter{
+    font-size:16px;
+    line-height:1.75;
+    white-space:pre-wrap;
+    margin:0 0 26px;
+    color:#f4f6ff;
+  }
+
+  .buttons{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+
+  button{
+    border:0;
+    cursor:pointer;
+    font-weight:900;
+    border-radius:14px;
+    padding:14px 18px;
+    font-size:16px;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    user-select:none;
+    transition: transform .15s ease, filter .15s ease;
+  }
+
+  .yes{
+    background:linear-gradient(135deg,var(--pink),var(--rose));
+    color:#fff;
+    box-shadow: 0 12px 30px #ff4fa33a;
+  }
+  .yes:hover{transform:translateY(-1px) scale(1.02); filter:brightness(1.08);}
+  .yes:active{transform:scale(.99);}
+
+  .no{
+    background:#ffffff14;
+    color:#fff;
+    border:1px solid #ffffff26;
+    box-shadow: 0 10px 25px rgba(0,0,0,.22);
+  }
+
+  /* Small confetti burst pieces (on button tap) */
+  .confetti{
+    position:fixed;
+    left:0; top:0;
+    pointer-events:none;
+    z-index:20;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.25));
+    animation: confettiFly 1.6s ease-out forwards;
+  }
+  @keyframes confettiFly{
+    0%{ transform: translate(0,0) scale(.7); opacity:0; }
+    10%{ opacity:1; }
+    70%{ opacity:1; }
+    100%{ transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1.35); opacity:0; }
+  }
+
+  /* ==========================
+     🎉 FULL CELEBRATION SCREEN
+     ========================== */
+  .celebrate{
+    position:fixed;
+    inset:0;
+    display:none;
+    z-index:50;
+    background:
+      radial-gradient(900px 600px at 50% 30%, #ff4fa32f, transparent 60%),
+      radial-gradient(900px 700px at 80% 70%, #ffd36e22, transparent 60%),
+      radial-gradient(900px 700px at 20% 80%, #7b5cff24, transparent 60%),
+      rgba(5,7,15,.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .celebrate.show{ display:block; }
+
+  .celebrateLayer{
+    position:absolute;
+    inset:0;
+    pointer-events:none; /* critical: never block taps */
+    overflow:hidden;
+  }
+
+  /* Continuous celebration hearts */
+  .c-heart{
+    position:absolute;
+    bottom:-70px;
+    opacity:.9;
+    animation: cFloat linear infinite;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.28));
+    will-change: transform, opacity;
+  }
+  @keyframes cFloat{
+    0%{ transform: translateY(0) translateX(0) scale(.9); opacity:0; }
+    8%{ opacity:1; }
+    70%{ opacity:1; }
+    100%{ transform: translateY(-130vh) translateX(var(--drift)) scale(1.45); opacity:0; }
+  }
+
+  /* Celebration sparkles */
+  .spark{
+    position:absolute;
+    width:6px;height:6px;border-radius:999px;
+    background: radial-gradient(circle, #fff, #fff0 70%);
+    opacity:.85;
+    animation: sparkUp linear infinite;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,.35));
+  }
+  @keyframes sparkUp{
+    0%{ transform: translateY(0) scale(.9); opacity:0; }
+    10%{ opacity:.9; }
+    100%{ transform: translateY(-120vh) scale(1.2); opacity:0; }
+  }
+
+  .celebrateContent{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    pointer-events:auto; /* content is clickable */
+  }
+
+  .celebrateCard{
+    width:min(900px, 100%);
+    background:#ffffff12;
+    border:1px solid #ffffff26;
+    border-radius:28px;
+    padding:28px;
+    box-shadow: 0 40px 120px rgba(0,0,0,.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .celebrateTitle{
+    margin:0 0 10px;
+    font-size: clamp(26px, 6vw, 44px);
+    letter-spacing:-.6px;
+  }
+  .celebrateSub{
+    margin:0 auto;
+    max-width:70ch;
+    color:#f4f6ff;
+    font-size:16px;
+    line-height:1.75;
+    white-space:pre-wrap;
+  }
+
+  .chipRow{
+    margin-top:18px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .chip{
+    border:1px solid #ffffff26;
+    background:#ffffff10;
+    color:#ffffffde;
+    padding:10px 12px;
+    border-radius:999px;
+    font-weight:800;
+    font-size:13px;
+  }
+
+  .celebrateActions{
+    margin-top:18px;
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .btnPrimary{
+    background:linear-gradient(135deg,var(--pink),var(--rose));
+    color:#fff;
+  }
+  .btnGhost{
+    background:#ffffff14;
+    color:#fff;
+    border:1px solid #ffffff26;
+  }
+
+  /* Reduced motion accessibility */
+  @media (prefers-reduced-motion: reduce){
+    .glow, .float-heart, .c-heart, .spark, .confetti { animation: none !important; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="glow"></div>
+  <div class="hearts" id="hearts" aria-hidden="true"></div>
+
+  <header>
+    A small page with a big question 💌<br>
+    <strong>For Hadia — with all my love.</strong>
+  </header>
+
+  <div class="card">
+    <h1>Will you be my Valentine, Hadia? 💖</h1>
+
+    <div class="letter">
+Even with distance between us, you still feel close — like home in my chest.
+
+I don’t need a perfect day, or perfect timing.
+I just need you — your laugh, your thoughts, the way you exist in my life.
+
+So here’s my question, wrapped in all my softness:
+Will you be my Valentine?
+
+If you say yes, that will make me the happiest person in the world. Oh who am i kidding u are already mine so u dont get a option here so just say yess or elsee🔪😂.Ok so jokes asidee i just hope that i am always ur choice in every aspect of ur life.
+
+With all my love ur future husband,Habib😁
+    </div>
+
+    <div class="buttons">
+      <button class="yes" id="yesBtn">Yes 💖</button>
+      <button class="no" id="noBtn">No 🙈</button>
+    </div>
+  </div>
+
+  <footer>
+    Made with love, patience, and a lot of missing you 💞
+  </footer>
+
+  <!-- 🎉 Celebration Screen -->
+  <section class="celebrate" id="celebrate" aria-hidden="true">
+    <div class="celebrateLayer" id="celebrateLayer" aria-hidden="true"></div>
+
+    <div class="celebrateContent">
+      <div class="celebrateCard">
+        <h2 class="celebrateTitle">SHE SAID YES!!! 🥹💖🎉</h2>
+        <p class="celebrateSub" id="celebrateText">
+Hadia… you just made my whole heart smile.
+
+Thank you for choosing me — across every mile, every time zone,
+every busy day, and every moment we’ve had to miss each other.
+
+I promise to keep showing up:
+in the small ways (the daily check-ins, the soft reassurance, the “I’m here”)
+and in the big ways (the patience, the effort, the future we’re building).
+Now i am just wishing that i was there to celebrate this with u but unfortunately i cant soo looking forward to the time when i can and hoping it comes soon.
+        </p>
+
+        <div class="chipRow">
+          <div class="chip">💞 Long-distance, same heartbeat</div>
+          <div class="chip">✨ Yours, always</div>
+          <div class="chip">💌 Valentine: unlocked</div>
+        </div>
+
+        <div class="celebrateActions">
+          <button class="btnPrimary" id="moreConfettiBtn">More confetti 💥</button>
+          <button class="btnGhost" id="closeCelebrateBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<script>
+  // Elements
+  const heartsLayer = document.getElementById("hearts");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn  = document.getElementById("noBtn");
+
+  const celebrate = document.getElementById("celebrate");
+  const celebrateLayer = document.getElementById("celebrateLayer");
+  const moreConfettiBtn = document.getElementById("moreConfettiBtn");
+  const closeCelebrateBtn = document.getElementById("closeCelebrateBtn");
+
+  // Emoji sets
+  const bgHearts = ["💗","💕","💖","💘","💝","💞","💓","✨"];
+  const burstEmojis = ["💖","💘","💝","💗","💕","💞","💓","✨","🥰","🌸"];
+
+  // =========================
+  // Background floating hearts
+  // =========================
+  function spawnFloatingHeart(){
+    const h = document.createElement("div");
+    h.className = "float-heart";
+    h.textContent = bgHearts[Math.floor(Math.random()*bgHearts.length)];
+
+    const left = Math.random()*100;
+    const size = 14 + Math.random()*24;
+    const duration = 10 + Math.random()*12;
+    const delay = Math.random()*2;
+
+    h.style.left = left + "vw";
+    h.style.fontSize = size + "px";
+    h.style.animationDuration = duration + "s";
+    h.style.animationDelay = delay + "s";
+    h.style.opacity = (0.45 + Math.random()*0.45).toFixed(2);
+
+    heartsLayer.appendChild(h);
+    setTimeout(() => h.remove(), (duration + delay) * 1000 + 200);
+  }
+
+  for(let i=0;i<16;i++) spawnFloatingHeart();
+  setInterval(spawnFloatingHeart, 850);
+
+  // =========================
+  // Confetti burst utility
+  // =========================
+  function burstConfetti(x, y, amount = 34){
+    for(let i=0;i<amount;i++){
+      const c = document.createElement("div");
+      c.className = "confetti";
+      c.textContent = burstEmojis[Math.floor(Math.random()*burstEmojis.length)];
+
+      const dx = (Math.random()*320 - 160) + "px";
+      const dy = (Math.random()*-340 - 120) + "px";
+      const rot = (Math.random()*720 - 360) + "deg";
+      const size = (14 + Math.random()*20) + "px";
+
+      c.style.left = x + "px";
+      c.style.top  = y + "px";
+      c.style.setProperty("--dx", dx);
+      c.style.setProperty("--dy", dy);
+      c.style.setProperty("--rot", rot);
+      c.style.fontSize = size;
+      c.style.animationDuration = (1.15 + Math.random()*0.75) + "s";
+
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 1900);
+    }
+  }
+
+  // =========================
+  // Celebration layer (continuous)
+  // =========================
+  let celebrationTimers = [];
+  function clearCelebrationTimers(){
+    celebrationTimers.forEach(t => clearInterval(t));
+    celebrationTimers = [];
+    celebrateLayer.innerHTML = "";
+  }
+
+  function spawnCelebrationHeart(){
+    const h = document.createElement("div");
+    h.className = "c-heart";
+    h.textContent = burstEmojis[Math.floor(Math.random()*burstEmojis.length)];
+
+    const left = Math.random()*100;
+    const size = 18 + Math.random()*34;
+    const duration = 6 + Math.random()*8;
+    const delay = Math.random()*1.2;
+    const drift = (Math.random()*120 - 60) + "px";
+
+    h.style.left = left + "vw";
+    h.style.fontSize = size + "px";
+    h.style.animationDuration = duration + "s";
+    h.style.animationDelay = delay + "s";
+    h.style.setProperty("--drift", drift);
+    h.style.opacity = (0.6 + Math.random()*0.35).toFixed(2);
+
+    celebrateLayer.appendChild(h);
+    setTimeout(() => h.remove(), (duration + delay) * 1000 + 300);
+  }
+
+  function spawnSpark(){
+    const s = document.createElement("div");
+    s.className = "spark";
+
+    const left = Math.random()*100;
+    const size = 4 + Math.random()*6;
+    const duration = 7 + Math.random()*7;
+    const delay = Math.random()*1.5;
+
+    s.style.left = left + "vw";
+    s.style.width = size + "px";
+    s.style.height = size + "px";
+    s.style.bottom = (-30 - Math.random()*60) + "px";
+    s.style.animationDuration = duration + "s";
+    s.style.animationDelay = delay + "s";
+    s.style.opacity = (0.4 + Math.random()*0.5).toFixed(2);
+
+    celebrateLayer.appendChild(s);
+    setTimeout(() => s.remove(), (duration + delay) * 1000 + 300);
+  }
+
+  function startCelebration(){
+    // Show celebration
+    celebrate.classList.add("show");
+    celebrate.setAttribute("aria-hidden","false");
+
+    // Big entrance burst from center
+    const cx = window.innerWidth/2;
+    const cy = window.innerHeight/2;
+    burstConfetti(cx, cy, 70);
+
+    // Start continuous hearts + sparkles
+    for(let i=0;i<26;i++) spawnCelebrationHeart();
+    for(let i=0;i<22;i++) spawnSpark();
+
+    celebrationTimers.push(setInterval(spawnCelebrationHeart, 180));
+    celebrationTimers.push(setInterval(spawnSpark, 220));
+  }
+
+  function stopCelebration(){
+    celebrate.classList.remove("show");
+    celebrate.setAttribute("aria-hidden","true");
+    clearCelebrationTimers();
+  }
+
+  // =========================
+  // Yes handlers (mobile-safe)
+  // =========================
+  function yesAction(){
+    // burst on the button itself
+    const r = yesBtn.getBoundingClientRect();
+    const x = r.left + r.width/2;
+    const y = r.top + r.height/2;
+    burstConfetti(x, y, 34);
+
+    // then full celebration
+    startCelebration();
+
+    // tiny vibration (Android supports, iPhone sometimes ignores)
+    if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+  }
+
+  yesBtn.addEventListener("click", yesAction);
+  yesBtn.addEventListener("touchstart", (e)=>{ e.preventDefault(); yesAction(); });
+
+  // More confetti button
+  function moreConfetti(){
+    const cx = window.innerWidth/2;
+    const cy = window.innerHeight/2 + 40;
+    burstConfetti(cx, cy, 90);
+    if (navigator.vibrate) navigator.vibrate(40);
+  }
+  moreConfettiBtn.addEventListener("click", moreConfetti);
+  moreConfettiBtn.addEventListener("touchstart", (e)=>{ e.preventDefault(); moreConfetti(); });
+
+  // Close celebration
+  closeCelebrateBtn.addEventListener("click", stopCelebration);
+  closeCelebrateBtn.addEventListener("touchstart", (e)=>{ e.preventDefault(); stopCelebration(); });
+
+  // Tap outside card closes too (optional, feels natural)
+  celebrate.addEventListener("click", (e)=>{
+    // only close if background is tapped (not the card/buttons)
+    if (e.target === celebrate) stopCelebration();
+  });
+
+  // ESC close on desktop
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") stopCelebration();
+  });
+
+  // =========================
+  // No button dodge (mobile-safe)
+  // =========================
+  function moveNo(){
+    const pad = 18;
+    const maxX = Math.max(pad, window.innerWidth - noBtn.offsetWidth - pad);
+    const maxY = Math.max(pad, window.innerHeight - noBtn.offsetHeight - pad);
+
+    const x = Math.random()*maxX;
+    const y = Math.random()*maxY;
+
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top  = y + "px";
+  }
+
+  noBtn.addEventListener("mouseenter", moveNo);
+  noBtn.addEventListener("click", ()=>{
+    const r = noBtn.getBoundingClientRect();
+    burstConfetti(r.left + r.width/2, r.top + r.height/2, 14);
+    moveNo();
+  });
+  noBtn.addEventListener("touchstart", (e)=>{ e.preventDefault(); moveNo(); });
+
+</script>
+</body>
+</html>
+
+
